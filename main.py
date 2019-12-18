@@ -13,8 +13,6 @@ def excelInputRequested():
 	except: 
 		print("Error: No correct list name input.")
 
-
-
 ### Function to display column names - user chooses afterwards to-be-analyzed columns###
 def listColumnNames(df):
 	try:
@@ -90,56 +88,6 @@ def getFinalResults(dictList, dataframe, amount, html):
 		print("Error: Returning final results failed.")
 		logger.error(print(str(e)))
 
-
-### Old ersion to print in consoleFunction to convert column counts in readable results ###
-
-'''
-### Function to convert column counts in readable results ###
-def getFinalResults(dictList, dataframe):
-	try:
-		counter = 0 
-		for i in dictList:
-			print(counter+1, ": counts and frequency of column ", dataframe.columns[columnListInt[counter]]) ### Print column title
-			totalEntries = sum(i.values()) # Get total number of entries to calculate percentages
-			x = PrettyTable() # Create Pretty Table
-			x.field_names = ["Value", "Count", "Percentage in %"]
-			### Iterate over values and respective counts
-			for k, v in i.items():
-				percentage = (v/totalEntries)*100
-				x.add_row([k,v, percentage])
-			print(x)
-			counter = counter + 1
-	except Exception as e:
-		print("Error: Returning final results failed.")
-		logger.error(print(str(e)))
-
-
-		def getFinalResults(dictList, dataframe):
-	try:
-		counter = 0 
-		tables = [] #table to store strings of tables
-
-		for i in dictList:
-			tables.append(dataframe.columns[columnListInt[counter]])
-			#print(counter+1, ": counts and frequency of column ", dataframe.columns[columnListInt[counter]]) ### Print column title
-			totalEntries = sum(i.values()) # Get total number of entries to calculate percentages
-			x = PrettyTable() # Create Pretty Table
-			x.field_names = ["Value", "Count", "Percentage in %"]
-			### Iterate over values and respective counts
-			for k, v in i.items():
-				percentage = (v/totalEntries)*100
-				x.add_row([k,v, percentage])
-			tables.append(x.get_html_string()) ### Transform to html
-			counter = counter + 1
-
-		tableString = ' '.join(tables)
-		return(tableString)
-	except Exception as e:
-		print("Error: Returning final results failed.")
-		logger.error(print(str(e)))
-
-
-'''
 
 df = excelInputRequested() ### Create dataframe from input
 print(listColumnNames(df))
