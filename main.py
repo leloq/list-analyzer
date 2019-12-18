@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np 
 from prettytable import PrettyTable
 
+noResults = 10 # Number of desired results in tables
+html = True # If representation is HTML or regular string
+
 def excelInputRequested():
 	try: 
 		listname = input("Please type in Excel name: ")
@@ -10,18 +13,23 @@ def excelInputRequested():
 	except: 
 		print("Error: No correct list name input.")
 
+
+
 ### Function to display column names - user chooses afterwards to-be-analyzed columns###
 def listColumnNames(df):
 	try:
 		print("### COLUMNS IN LIST ###")
 		columnNamesList = list(df)
 		index = 0
+		columnNames = ""
 		for i in columnNamesList:
-			print("Index: ",index," Column Name:",i)
+			strAdd = "Index: "+str(index)+" Column Name: "+i+"\n"
+			columnNames = columnNames + strAdd
+			#print("Index: ",index," Column Name:",i)
 			index = index +1
-
-	except: 
-		print("Error: Listing column names failed.")
+		return(columnNames)
+	except Exception as e: 
+		print("Error: Listing column names failed.",e)
 
 ### Function to request to-be-analyzed columns by user ###
 def enterColumnNames(): 
@@ -52,12 +60,46 @@ def getColumnCounts(dataframe, columns):
 	except:
 		print("Error: Getting frequency of values in columns failed.")
 
+### Function to return string of. Amount determines how many entries, html if return string is in html format or regular string
+def getFinalResults(dictList, dataframe, amount, html):
+	try:
+		counter = 0 
+		tables = [] #table to store strings of tables
+
+		for i in dictList:
+			tables.append(dataframe.columns[columnListInt[counter]])
+			#print(counter+1, ": counts and frequency of column ", dataframe.columns[columnListInt[counter]]) ### Print column title
+			totalEntries = sum(i.values()) # Get total number of entries to calculate percentages
+			x = PrettyTable() # Create Pretty Table
+			x.field_names = ["Value", "Count", "Percentage in %"]
+			### Iterate over values and respective counts
+			entries = list(i.items()) ### Convert dict items to 
+			for k, v in entries[:amount]:
+				percentage = round((v/totalEntries)*100,2)
+				x.add_row([k,v, percentage])
+
+			if(html):
+				tables.append(x.get_html_string()) ### Transform to html
+			else:
+				tables.append(x.get_string()) ### Transform to html
+			counter = counter + 1
+
+		tableString = ' '.join(tables)
+		return(tableString)
+	except Exception as e:
+		print("Error: Returning final results failed.")
+		logger.error(print(str(e)))
+
+
+### Old ersion to print in consoleFunction to convert column counts in readable results ###
+
+'''
 ### Function to convert column counts in readable results ###
 def getFinalResults(dictList, dataframe):
 	try:
 		counter = 0 
 		for i in dictList:
-			print(counter+1, ": counts and frequency of column ", dataframe.columns[counter]) ### Print column title
+			print(counter+1, ": counts and frequency of column ", dataframe.columns[columnListInt[counter]]) ### Print column title
 			totalEntries = sum(i.values()) # Get total number of entries to calculate percentages
 			x = PrettyTable() # Create Pretty Table
 			x.field_names = ["Value", "Count", "Percentage in %"]
@@ -72,8 +114,35 @@ def getFinalResults(dictList, dataframe):
 		logger.error(print(str(e)))
 
 
+		def getFinalResults(dictList, dataframe):
+	try:
+		counter = 0 
+		tables = [] #table to store strings of tables
+
+		for i in dictList:
+			tables.append(dataframe.columns[columnListInt[counter]])
+			#print(counter+1, ": counts and frequency of column ", dataframe.columns[columnListInt[counter]]) ### Print column title
+			totalEntries = sum(i.values()) # Get total number of entries to calculate percentages
+			x = PrettyTable() # Create Pretty Table
+			x.field_names = ["Value", "Count", "Percentage in %"]
+			### Iterate over values and respective counts
+			for k, v in i.items():
+				percentage = (v/totalEntries)*100
+				x.add_row([k,v, percentage])
+			tables.append(x.get_html_string()) ### Transform to html
+			counter = counter + 1
+
+		tableString = ' '.join(tables)
+		return(tableString)
+	except Exception as e:
+		print("Error: Returning final results failed.")
+		logger.error(print(str(e)))
+
+
+'''
+
 df = excelInputRequested() ### Create dataframe from input
-listColumnNames(df)
+print(listColumnNames(df))
 columnListInt = enterColumnNames()
 countsDict = getColumnCounts(df, columnListInt)
-getFinalResults (countsDict, df)
+print(getFinalResults (countsDict, df, noResults, html))
