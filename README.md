@@ -1,4 +1,4 @@
-# list-analyzer
+# Python script for easy pivot analysis of columns in Excel files
 Python-based tool to make column specific pivot analysis of columns of excel tables. Outputs tables of distribution of values, absolute amount of values and percentage. Usable through command line.
 
 # Pre-Requisites
